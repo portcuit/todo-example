@@ -1,0 +1,12 @@
+{
+  "root": true,
+  "newTodo": "",
+  "items": [
+    {
+      "title": "",
+      "completed": false,
+      "editing": false,
+      "checked": false
+    }
+  ]
+}

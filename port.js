@@ -4,7 +4,6 @@ worker = require('@tsugite/worker/port').raw
 const context = require('@tsugite/port/context').raw
 const store = require('@tsugite/uikit/port/store')
 const ui = require('@tsugite/uikit/port/ui')
-const action = require('@tsugite/port/action')
 
 module.exports = prepare({
   context: {
@@ -19,8 +18,52 @@ module.exports = prepare({
   store: {
     state: {
       ...store.container,
-      root: store.attribute
+      root: store.attribute,
+      newTodo: store.attribute,
+      item: {
+        ...store.container,
+        collection: {
+          ...store.collection,
+          add: null
+        },
+        title: store.attribute,
+        checked: store.attribute,
+        editing: store.attribute
+      }
     }
   },
-  ui: ui.container
+  ui: {
+    ...ui.container,
+    newTodo: ui.element,
+    item: {
+      ...ui.container,
+      collection: ui.collection,
+      title: ui.element,
+      destroy: ui.element,
+      checked: ui.element,
+      edit: ui.element
+    }
+  },
+  action: {
+    newTodo: {
+      keypress: null,
+      enter: null
+    },
+    item: {
+      title: {
+        dblclick: null
+      },
+      checked: {
+        change: null,
+      },
+      destroy: {
+        click: null
+      },
+      edit: {
+        keypress: null,
+        enter: null,
+        esc: null
+      }
+    }
+  }
 })

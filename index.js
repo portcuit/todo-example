@@ -15,10 +15,19 @@ exports.default = port => {
   return compose(
     plug(direct, source(port.ui.vnode), sink(port.snabbdom.render)),
     plug(fromEmitter(emitter, 'action')),
+    require('./action').default(port.action),
     require('./logic/lifecycle').default(port.context, port.worker, './src/todo/boot/ui.js'),
     require('@tsugite/snabbdom').default(port.snabbdom, port.context.main, document.body.children[0], [actionModule, ...defaultModules]),
     require('@tsugite/worker').default(port.context.ui, port.worker, [
       port.store.state.update,
+      port.store.state.item.collection.add,
+      port.action.newTodo.enter,
+      port.action.item.checked.change,
+      port.action.item.destroy.click,
+      port.action.item.title.dblclick,
+      port.action.item.edit.enter,
+      port.action.item.edit.esc,
+      port.context.ui.terminate,
       port.context.main.terminate]))
 }
 
@@ -26,10 +35,11 @@ exports.ui = port =>
   compose(
     plug(direct, source(port.context.main.terminate), sink(port.context.ui.terminate)),
     plug(direct, source(port.context.ui.terminate), sink(port.context.ui.terminated)),
-    require('./ui').default(port.ui, port.store,
-      require('./ui/view')),
+    require('./ui').default(port.ui, port.store.state, port.action,
+      {...require('./ui/view'), item: require('./ui/view/item')}),
     require('./store/state').default(port.store.state, port.context.main,
-      {init: require('./store/state/initial')}),
+      {init: require('./store/state/initial'), item: require('./store/state/initial/item')}),
+    require('./action').ui(port.action, port.store.state),
     require('@tsugite/worker').server(port.worker.serverPost, [
       port.ui.vnode,
       port.context.ui.terminated]))
