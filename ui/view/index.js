@@ -7,7 +7,7 @@ const view = ([newTodo, items]) =>
       input('.new-todo', {
         ...newTodo,
         props: {
-          value: '',
+          value: newTodo.store,
           placeholder: 'What needs to be done?',
           autofocus: true
         }

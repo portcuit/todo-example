@@ -3,7 +3,13 @@
   "newTodo": "",
   "items": [
     {
-      "title": "",
+      "title": "ひとつ",
+      "completed": false,
+      "editing": false,
+      "checked": false
+    },
+    {
+      "title": "ふたつ",
       "completed": false,
       "editing": false,
       "checked": false

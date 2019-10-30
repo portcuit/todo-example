@@ -4,16 +4,13 @@ const {element,container,collection,modified,vnode} = require('@tsugite/uikit/he
 exports.default = (ui, state, action, view) =>
   compose(
     plug(vnode(view.view), source(ui.data), sink(ui.vnode)),
-
     plug(container,
       source(state.root.unit), sink(ui.data),
       source(ui.newTodo.data),
       source(ui.item.collection.data)),
-
     plug(element({
       keypress: [action.newTodo.keypress, ['keyCode'], ['target', 'value']]
-    }), source(state.item.collection.data), sink(ui.newTodo.data)),
-
+    }), source(state.newTodo.data), sink(ui.newTodo.data)),
     plug(collection,
       source(ui.item.modified),
       source(state.item.collection.modify),
@@ -25,8 +22,7 @@ exports.default = (ui, state, action, view) =>
       source(ui.item.title.data),
       source(ui.item.checked.data),
       source(ui.item.destroy.data),
-      source(ui.item.edit.data)
-    ),
+      source(ui.item.edit.data)),
     plug(element({dblclick: [action.item.title.dblclick]}),
       source(state.item.title.data), sink(ui.item.title.data)),
     plug(element({change: [action.item.checked.change, ['target', 'checked']]}),
@@ -35,5 +31,4 @@ exports.default = (ui, state, action, view) =>
       source(state.item.data), sink(ui.item.destroy.data)),
     plug(element({keydown: [action.item.edit.keypress, ['keyCode'], ['target', 'value']]}),
       source(state.item.title.data), sink(ui.item.edit.data)
-    ),
-  )
+    ))

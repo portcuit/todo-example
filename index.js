@@ -35,11 +35,11 @@ exports.ui = port =>
   compose(
     plug(direct, source(port.context.main.terminate), sink(port.context.ui.terminate)),
     plug(direct, source(port.context.ui.terminate), sink(port.context.ui.terminated)),
+    require('./action').ui(port.action, port.store.state),
     require('./ui').default(port.ui, port.store.state, port.action,
       {...require('./ui/view'), item: require('./ui/view/item')}),
     require('./store/state').default(port.store.state, port.context.main,
       {init: require('./store/state/initial'), item: require('./store/state/initial/item')}),
-    require('./action').ui(port.action, port.store.state),
     require('@tsugite/worker').server(port.worker.serverPost, [
       port.ui.vnode,
       port.context.ui.terminated]))

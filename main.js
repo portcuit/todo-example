@@ -10,9 +10,7 @@ exports.default = () =>
   create(main(port), port, port.context.main,
     stream$ =>
       stream$.pipe(
-        tap(pipe(cond([
-          [T, identity]
-        ]), apply(console.log))),
+        tap(apply(console.log)),
         catchError(e => (console.error(e),
           process.env.STAGE ?
             process.exit(-1) :
