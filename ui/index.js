@@ -5,13 +5,14 @@ exports.default = (ui, state, action, view) =>
   compose(
     plug(vnode(view.view), source(ui.data), sink(ui.vnode)),
 
-    plug(container, source(state.root.data), sink(ui.data),
+    plug(container,
+      source(state.root.unit), sink(ui.data),
       source(ui.newTodo.data),
-      source(ui.item.collection.data)
-    ),
+      source(ui.item.collection.data)),
+
     plug(element({
       keypress: [action.newTodo.keypress, ['keyCode'], ['target', 'value']]
-    }), source(state.newTodo.data), sink(ui.newTodo.data)),
+    }), source(state.item.collection.data), sink(ui.newTodo.data)),
 
     plug(collection,
       source(ui.item.modified),

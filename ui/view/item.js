@@ -3,32 +3,24 @@ const {li,div,label,button,input} = require('@cycle/dom')
 const view = ([title, checked, destroy, edit]) =>
   li({
     class: {
-      editing: destroy.value.editing
+      editing: destroy.store.editing
     }
   }, [
     div('.view', [
       input('.toggle', {
-        action: checked.action,
-        idxs: checked.idxs,
+        ...checked,
         props: {
           type: 'checkbox',
-          checked: checked.value
+          checked: checked.store
         }
       }),
-      label({
-        action: title.action,
-        idxs: title.idxs
-      }, title.value),
-      button('.destroy', {
-        action: destroy.action,
-        idxs: destroy.idxs
-      })
+      label(title, title.store),
+      button('.destroy', destroy)
     ]),
     input('.edit', {
-      action: edit.action,
-      idxs: edit.idxs,
+      ...edit,
       props: {
-        value: edit.value
+        value: edit.store
       }
     })
   ])

@@ -5,10 +5,9 @@ const view = ([newTodo, items]) =>
     header('.header', [
       h1('todos'),
       input('.new-todo', {
-        action: newTodo.action,
-        idxs: newTodo.idxs,
+        ...newTodo,
         props: {
-          value: newTodo.value,
+          value: '',
           placeholder: 'What needs to be done?',
           autofocus: true
         }
