@@ -1,17 +1,18 @@
 const {li,div,label,button,input} = require('@cycle/dom')
 
-const view = ([title, checked, destroy, edit]) =>
+const view = ([title, completed, destroy, edit]) =>
   li({
     class: {
-      editing: destroy.store.editing
+      editing: destroy.store.editing,
+      completed: destroy.store.completed
     }
   }, [
     div('.view', [
       input('.toggle', {
-        ...checked,
+        ...completed,
         props: {
           type: 'checkbox',
-          checked: checked.store
+          checked: completed.store
         }
       }),
       label(title, title.store),
@@ -24,6 +25,5 @@ const view = ([title, checked, destroy, edit]) =>
       }
     })
   ])
-
 
 module.exports = {view}

@@ -27,9 +27,10 @@ module.exports = prepare({
           add: null
         },
         title: store.attribute,
-        checked: store.attribute,
+        completed: store.attribute,
         editing: store.attribute
-      }
+      },
+      left: null
     }
   },
   ui: {
@@ -40,9 +41,10 @@ module.exports = prepare({
       collection: ui.collection,
       title: ui.element,
       destroy: ui.element,
-      checked: ui.element,
+      completed: ui.element,
       edit: ui.element
-    }
+    },
+    left: ui.element
   },
   action: {
     newTodo: {
@@ -53,7 +55,7 @@ module.exports = prepare({
       title: {
         dblclick: null
       },
-      checked: {
+      completed: {
         change: null,
       },
       destroy: {

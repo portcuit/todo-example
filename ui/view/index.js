@@ -1,6 +1,6 @@
 const {section,header,h1,input,label,ul,li,div,button,footer,span,strong,a} = require('@cycle/dom')
 
-const view = ([newTodo, items]) =>
+const view = ([newTodo, items, left]) =>
   section('.todoapp', [
     header('.header', [
       h1('todos'),
@@ -28,24 +28,10 @@ const view = ([newTodo, items]) =>
     ]),
     footer('.footer', [
       span('.todo-count', [
-        strong('0'),
+        strong(left.store),
         ' item left'
-      ]),
-      ul('.filters', [
-        li([
-          a('.selected', [
-            'All'
-          ])
-        ]),
-        li([
-          a('Activate')
-        ]),
-        li([
-          a('Completed')
-        ])
       ])
     ])
   ])
-
 
 module.exports = {view}

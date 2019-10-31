@@ -1,18 +1,4 @@
 {
-  "root": true,
   "newTodo": "",
-  "items": [
-    {
-      "title": "ひとつ",
-      "completed": false,
-      "editing": false,
-      "checked": false
-    },
-    {
-      "title": "ふたつ",
-      "completed": false,
-      "editing": false,
-      "checked": false
-    }
-  ]
+  "items": []
 }

@@ -2,7 +2,7 @@ const {apply,propEq,remove} = require('ramda')
 const {of} = require('rxjs')
 const {tap,filter,map,mergeMap,withLatestFrom,delay} = require('rxjs/operators')
 const {compose,plug,source,sink} = require('@tsugite/core')
-const {direct,dropTo,bindTo,dropBindTo,mapToSink} = require('@tsugite/helper')
+const {dropTo,dropBindTo,mapToSink} = require('@tsugite/helper')
 
 const keyCode = keyCode =>
   (source$, sink) =>
@@ -28,7 +28,7 @@ exports.ui = (action, state) =>
     plug(mapToSink(), source(action.newTodo.enter), sink(state.item.collection.add)),
     plug(add, source(action.newTodo.enter), sink(state.item.title.update), source(state.item.collection.data)),
     plug(mapToSink(''), source(action.newTodo.enter), sink(state.newTodo.update)),
-    plug(dropTo(1), source(action.item.checked.change), sink(state.item.checked.update)),
+    plug(dropTo(1), source(action.item.completed.change), sink(state.item.completed.update)),
     plug(dropBindTo(1, null), source(action.item.destroy.click), sink(state.item.collection.update)),
     plug(dropBindTo(1, true), source(action.item.title.dblclick), sink(state.item.editing.update)),
     plug(dropTo(2), source(action.item.edit.enter), sink(state.item.title.update)),
