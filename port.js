@@ -1,7 +1,7 @@
 const {prepare} = require('@tsugite/core')
 snabbdom = require('@tsugite/snabbdom/port').raw
 worker = require('@tsugite/worker/port').raw
-const context = require('@tsugite/port/context').raw
+const context = require('@tsugite/core/port/context').raw
 const store = require('@tsugite/uikit/port/store')
 const ui = require('@tsugite/uikit/port/ui')
 
