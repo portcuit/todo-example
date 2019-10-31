@@ -1,16 +1,13 @@
 const {cond,pipe,T,apply, identity} = require('ramda')
 const {of} = require('rxjs')
 const {tap,catchError} = require('rxjs/operators')
-const {run,compose} = require('@pkit/core')
+const {run} = require('@pkit/core')
 
-const ports = require('./port').default
-
-const stream = compose(
-  require('@pkit/electron').default(ports.electron, ports.context.main),
-  require('./').default(ports.context.main, ports.electron))
+const port = require('./port').default
+const main = require('./').default
 
 exports.default = () =>
-  run(stream, ports, ports.context.main,
+  run(main(port), port, port.context.main,
     stream$ =>
       stream$.pipe(
         tap(pipe(cond([
