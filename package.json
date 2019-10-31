@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "electron": "electron --inspect --remote-debugging-port=9222 electron",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

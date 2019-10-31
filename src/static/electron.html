@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+<main></main>
+<script>
+  module.filename = require('path').join(require('path').resolve(`${__dirname}/../../`), 'index.html')
+  require('./inspect')
+  var subject$
+  (async () =>
+    subject$ = await reload('./src/app/main'))()
+</script>
+</body>
+</html>
