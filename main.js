@@ -1,13 +1,13 @@
-const {T,pipe,identity,cond,apply} = require('ramda')
+const {apply} = require('ramda')
 const {of} = require('rxjs')
 const {tap,map,catchError} = require('rxjs/operators')
-const {create} = require('@tsugite/core')
+const {run} = require('@tsugite/core')
 
 const port = require('./port').default
 const {default: main, ui} = require('./')
 
 exports.default = () =>
-  create(main(port), port, port.context.main,
+  run(main(port), port, port.context.main,
     stream$ =>
       stream$.pipe(
         tap(apply(console.log)),
@@ -17,7 +17,7 @@ exports.default = () =>
             of()))))
 
 exports.ui = () =>
-  create(ui(port), port, port.context.main,
+  run(ui(port), port, port.context.main,
     stream$ =>
       stream$.pipe(
         tap(apply(console.log)),
