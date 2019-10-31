@@ -1,6 +1,6 @@
 const {tap,filter,map,switchMap,startWith} = require('rxjs/operators')
-const {compose,plug,source,sink} = require('@tsugite/core')
-const {mapToSink} = require('@tsugite/helper')
+const {compose,plug,source,sink} = require('@pkit/core')
+const {mapToSink} = require('@pkit/helper')
 
 const terminate = (source$, terminated$, sink) =>
   source$.pipe(

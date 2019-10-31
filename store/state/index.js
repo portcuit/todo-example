@@ -1,7 +1,7 @@
 const {apply,pipe,isNil,not,insert,__,length,propEq} = require('ramda')
 const {map} = require('rxjs/operators')
-const {compose,plug,source,sink} = require('@tsugite/core')
-const {base,attribute,container,init,add} = require('@tsugite/uikit/helper/store')
+const {compose,plug,source,sink} = require('@pkit/core')
+const {base,attribute,container,init,add} = require('@pkit/uikit/helper/store')
 
 const left = (source$, sink) =>
   source$.pipe(

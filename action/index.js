@@ -1,8 +1,8 @@
 const {apply,propEq,remove} = require('ramda')
 const {of} = require('rxjs')
 const {tap,filter,map,mergeMap,withLatestFrom,delay} = require('rxjs/operators')
-const {compose,plug,source,sink} = require('@tsugite/core')
-const {dropTo,dropBindTo,mapToSink} = require('@tsugite/helper')
+const {compose,plug,source,sink} = require('@pkit/core')
+const {dropTo,dropBindTo,mapToSink} = require('@pkit/helper')
 
 const keyCode = keyCode =>
   (source$, sink) =>

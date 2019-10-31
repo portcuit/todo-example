@@ -1,7 +1,7 @@
 const {apply} = require('ramda')
 const {of} = require('rxjs')
 const {tap,map,catchError} = require('rxjs/operators')
-const {run} = require('@tsugite/core')
+const {run} = require('@pkit/core')
 
 const port = require('./port').default
 const {default: main, ui} = require('./')

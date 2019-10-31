@@ -1,5 +1,5 @@
-const {compose,plug,source,sink} = require('@tsugite/core')
-const {element,container,vnode,containerCollection} = require('@tsugite/uikit/helper/ui')
+const {compose,plug,source,sink} = require('@pkit/core')
+const {element,container,vnode,containerCollection} = require('@pkit/uikit/helper/ui')
 
 exports.default = (context, ui, state, action, view) =>
   compose(

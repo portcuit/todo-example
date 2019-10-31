@@ -1,10 +1,10 @@
-const {compose,plug,source,sink} = require('@tsugite/core')
-const {direct,fromEmitter} = require('@tsugite/helper')
+const {compose,plug,source,sink} = require('@pkit/core')
+const {direct,fromEmitter} = require('@pkit/helper')
 
 exports.default = port => {
   const {EventEmitter} = require('events')
-  const {defaultModules} = require('@tsugite/snabbdom')
-  const createActionModule = require('@tsugite/snabbdom/action')
+  const {defaultModules} = require('@pkit/snabbdom')
+  const createActionModule = require('@pkit/snabbdom/action')
   const emitter = new EventEmitter
   const actionModule = createActionModule(emitter, 'action')
   const {injectGlobal} = require('emotion')
@@ -17,8 +17,8 @@ exports.default = port => {
     plug(fromEmitter(emitter, 'action')),
     require('./action').default(port.action),
     require('./logic/lifecycle').default(port.context, port.worker, './src/todo/boot/ui.js'),
-    require('@tsugite/snabbdom').default(port.snabbdom, port.context.main, document.body.children[0], [actionModule, ...defaultModules]),
-    require('@tsugite/worker').default(port.context.ui, port.worker, [
+    require('@pkit/snabbdom').default(port.snabbdom, port.context.main, document.body.children[0], [actionModule, ...defaultModules]),
+    require('@pkit/worker').default(port.context.ui, port.worker, [
       port.store.state.update,
       port.action.newTodo.enter,
       port.action.item.completed.change,
@@ -39,6 +39,6 @@ exports.ui = port =>
       {...require('./ui/view'), item: require('./ui/view/item')}),
     require('./store/state').default(port.store.state, port.context.main,
       {init: require('./store/state/initial'), item: require('./store/state/initial/item')}),
-    require('@tsugite/worker').server(port.worker.serverPost, [
+    require('@pkit/worker').server(port.worker.serverPost, [
       port.ui.vnode,
       port.context.ui.terminated]))

@@ -1,9 +1,9 @@
-const {prepare} = require('@tsugite/core')
-snabbdom = require('@tsugite/snabbdom/port').raw
-worker = require('@tsugite/worker/port').raw
-const context = require('@tsugite/core/port/context').raw
-const store = require('@tsugite/uikit/port/store')
-const ui = require('@tsugite/uikit/port/ui')
+const {prepare} = require('@pkit/core')
+snabbdom = require('@pkit/snabbdom/port').raw
+worker = require('@pkit/worker/port').raw
+const context = require('@pkit/core/port/context').raw
+const store = require('@pkit/uikit/port/store')
+const ui = require('@pkit/uikit/port/ui')
 
 module.exports = prepare({
   context: {
