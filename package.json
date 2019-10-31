@@ -1,0 +1,24 @@
+{
+  "name": "@pkit/todo-example",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/portcuit/todo-example.git"
+  },
+  "author": "pkit <info@subak.jp> (https://github.com/portcuit)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/portcuit/todo-example/issues"
+  },
+  "homepage": "https://github.com/portcuit/todo-example#readme",
+  "dependencies": {
+    "@pkit/electron": "github:portcuit/electron",
+    "@pkit/snabbdom": "github:portcuit/snabbdom",
+    "@pkit/worker": "github:portcuit/worker"
+  }
+}
