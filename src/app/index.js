@@ -16,7 +16,7 @@ exports.default = port => {
     plug(direct, source(port.ui.vnode), sink(port.snabbdom.render)),
     plug(fromEmitter(emitter, 'action')),
     require('./action').default(port.action),
-    require('./logic/lifecycle').default(port.context, port.worker, './src/todo/boot/ui.js'),
+    require('./logic/lifecycle').default(port.context, port.worker, `${__dirname}/boot/ui.js`),
     require('@pkit/snabbdom').default(port.snabbdom, port.context.main, document.body.children[0], [actionModule, ...defaultModules]),
     require('@pkit/worker').default(port.context.ui, port.worker, [
       port.store.state.update,
