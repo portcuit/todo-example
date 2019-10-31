@@ -21,6 +21,7 @@
     "@pkit/electron": "github:portcuit/electron#v0.0.2",
     "@pkit/snabbdom": "github:portcuit/snabbdom#v0.0.1",
     "@pkit/uikit": "github:portcuit/uikit#v0.0.1",
-    "@pkit/worker": "github:portcuit/worker#v0.0.1"
+    "@pkit/worker": "github:portcuit/worker#v0.0.2",
+    "emotion": "^10.0.23"
   }
 }
