@@ -1,6 +1,6 @@
 const {prepare} = require('@pkit/core')
-snabbdom = require('@pkit/snabbdom/port').raw
-worker = require('@pkit/worker/port').raw
+const snabbdom = require('@pkit/snabbdom/port').raw
+const worker = require('@pkit/worker/port').raw
 const context = require('@pkit/core/port/context').raw
 const store = require('@pkit/uikit/port/store')
 const ui = require('@pkit/uikit/port/ui')
