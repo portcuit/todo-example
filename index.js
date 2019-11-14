@@ -3,7 +3,7 @@ const {directSink,fromEmitter} = require('@pkit/helper')
 const worker = require('@pkit/worker')
 const ui = require('./ui')
 const action = require('./action')
-const snabbdom = require('@pkit/snabbdom/port')
+const snabbdom = require('@pkit/snabbdom')
 const {context} = require('@pkit/core/port')
 
 exports.port = {
@@ -15,7 +15,7 @@ exports.port = {
       reload: null
     }
   },
-  snabbdom,
+  snabbdom: snabbdom.port,
   worker: worker.port,
   ui: ui.port,
   action: action.port
@@ -23,8 +23,7 @@ exports.port = {
 
 exports.default = (port, Worker) => {
   const {EventEmitter} = require('events')
-  const {defaultModules} = require('@pkit/snabbdom')
-  const createActionModule = require('@pkit/snabbdom/action')
+  const {defaultModules, action: createActionModule} = require('@pkit/snabbdom')
   const emitter = new EventEmitter
   const actionModule = createActionModule(emitter, 'action')
   const {injectGlobal} = require('emotion')
@@ -45,7 +44,7 @@ exports.default = (port, Worker) => {
       port.context.main.terminate),
     plug(fromEmitter(emitter, 'action')),
     action.default(port.action),
-    require('@pkit/snabbdom').default(port.snabbdom, port, document.body.children[0], [actionModule, ...defaultModules]),
+    snabbdom.default(port.snabbdom, port, document.body.children[0], [actionModule, ...defaultModules]),
     plug(directSink, source(port.ui.view.vnode), sink(port.snabbdom.render)))
 }
 
