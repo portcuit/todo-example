@@ -8,10 +8,10 @@ exports.default = (port, main, ...args) =>
     stream$ =>
       stream$.pipe(
         tap(apply(console.log)),
-        catchError(e => (console.error(e),
-          process.env.STAGE ?
-            process.exit(-1) :
-            of()))))
+        catchError(e => {
+          console.error(e)
+          return of()
+        })))
 
 exports.ui = (port, main, parent) =>
   run(port, main, [parent],
@@ -23,3 +23,15 @@ exports.ui = (port, main, parent) =>
           parent.postMessage(['error', e.message, e.stack])
           return of()
         })))
+
+exports.electron = (port, hook, ...args) =>
+  run(port, hook, args,
+    stream$ =>
+      stream$.pipe(
+        tap(apply(console.log))),
+    catchError(e => {
+      console.error(e)
+      return process.env.STAGE ?
+        process.exit(-1) :
+        of()
+    }))

@@ -38,8 +38,10 @@ exports.port = {
 
 const state = (context, state, {attribute, container, base, add, init}) =>
   compose(
-    plug(left, source(state.item.collection.data), sink(state.left)),
-    plug(init(initial.state), source(context.init), sink(state.update)),
+    plug(left,
+      source(state.item.collection.data), sink(state.left)),
+    plug(init(initial.state),
+      source(context.init), sink(state.update)),
     attribute(state.item.editing, state.item, state, ['editing'], ['items', 0, 'editing']),
     attribute(state.item.completed, state.item, state, ['completed'], ['items', 0, 'completed']),
     attribute(state.item.title, state.item, state, ['title'], ['items', 0, 'title']),
@@ -51,7 +53,8 @@ const state = (context, state, {attribute, container, base, add, init}) =>
 
 const view = (context, state, view, action, {vnode, container, element, containerCollection}) =>
   compose(
-    plug(vnode(template.app), source(view.data), sink(view.vnode)),
+    plug(vnode(template.app),
+      source(view.data), sink(view.vnode)),
     plug(container,
       source(context.init), sink(view.data),
       source(view.newTodo.data),
@@ -59,7 +62,8 @@ const view = (context, state, view, action, {vnode, container, element, containe
       source(view.left.data)),
     plug(element({keypress: [action.newTodo.keypress, ['keyCode'], ['target', 'value']]}),
       source(state.newTodo.data), sink(view.newTodo.data)),
-    plug(element(), source(state.left), sink(view.left.data)),
+    plug(element(),
+      source(state.left), sink(view.left.data)),
     containerCollection(
       state.item, view.item,
       state.item.collection, view.item.collection,
