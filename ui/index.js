@@ -1,9 +1,8 @@
-const {apply,pipe,isNil,not,insert,__,length,propEq} = require('ramda')
-const {map} = require('rxjs/operators')
 const {compose,plug,source,sink} = require('@pkit/core')
 const ui = require('@pkit/uikit')
 const initial = require('./initial')
 const template = require('./template')
+const {left} = require('./processors')
 
 exports.port = {
   state: {
@@ -37,39 +36,31 @@ exports.port = {
   }
 }
 
-const left = (source$, sink) =>
-  source$.pipe(
-    map(([items]) =>
-      items
-        .filter(pipe(isNil,not))
-        .filter(propEq('completed', false))),
-    map(pipe(length, insert(0,__,[]), apply(sink))))
-
-const state = (state, context) =>
+const state = (context, state, {attribute, container, base, add, init}) =>
   compose(
     plug(left, source(state.item.collection.data), sink(state.left)),
-    plug(ui.helper.state.init(initial.state), source(context.init), sink(state.update)),
-    ui.helper.state.attribute(state.item.editing, state.item, state, ['editing'], ['items', 0, 'editing']),
-    ui.helper.state.attribute(state.item.completed, state.item, state, ['completed'], ['items', 0, 'completed']),
-    ui.helper.state.attribute(state.item.title, state.item, state, ['title'], ['items', 0, 'title']),
-    ui.helper.state.container(state.item.collection, state.item),
-    ui.helper.state.add(state.item.collection, initial.item),
-    ui.helper.state.attribute(state.item.collection, state, state, ['items'], ['items', 0]),
-    ui.helper.state.attribute(state.newTodo, state, state, ['newTodo'], ['newTodo']),
-    ui.helper.state.base(state, {}))
+    plug(init(initial.state), source(context.init), sink(state.update)),
+    attribute(state.item.editing, state.item, state, ['editing'], ['items', 0, 'editing']),
+    attribute(state.item.completed, state.item, state, ['completed'], ['items', 0, 'completed']),
+    attribute(state.item.title, state.item, state, ['title'], ['items', 0, 'title']),
+    container(state.item.collection, state.item),
+    add(state.item.collection, initial.item),
+    attribute(state.item.collection, state, state, ['items'], ['items', 0]),
+    attribute(state.newTodo, state, state, ['newTodo'], ['newTodo']),
+    base(state, {}))
 
-const view = (context, view, state, action) =>
+const view = (context, state, view, action, {vnode, container, element, containerCollection}) =>
   compose(
-    plug(ui.helper.view.vnode(template.app), source(view.data), sink(view.vnode)),
-    plug(ui.helper.view.container,
+    plug(vnode(template.app), source(view.data), sink(view.vnode)),
+    plug(container,
       source(context.init), sink(view.data),
       source(view.newTodo.data),
       source(view.item.collection.data),
       source(view.left.data)),
-    plug(ui.helper.view.element({keypress: [action.newTodo.keypress, ['keyCode'], ['target', 'value']]}),
+    plug(element({keypress: [action.newTodo.keypress, ['keyCode'], ['target', 'value']]}),
       source(state.newTodo.data), sink(view.newTodo.data)),
-    plug(ui.helper.view.element(), source(state.left), sink(view.left.data)),
-    ui.helper.view.containerCollection(
+    plug(element(), source(state.left), sink(view.left.data)),
+    containerCollection(
       state.item, view.item,
       state.item.collection, view.item.collection,
       template.item,
@@ -77,17 +68,16 @@ const view = (context, view, state, action) =>
       view.item.completed.data,
       view.item.destroy.data,
       view.item.edit.data),
-    plug(ui.helper.view.element({dblclick: [action.item.title.dblclick]}),
+    plug(element({dblclick: [action.item.title.dblclick]}),
       source(state.item.title.data), sink(view.item.title.data)),
-    plug(ui.helper.view.element({change: [action.item.completed.change, ['target', 'checked']]}),
+    plug(element({change: [action.item.completed.change, ['target', 'checked']]}),
       source(state.item.completed.data), sink(view.item.completed.data)),
-    plug(ui.helper.view.element({click: [action.item.destroy.click]}),
+    plug(element({click: [action.item.destroy.click]}),
       source(state.item.data), sink(view.item.destroy.data)),
-    plug(ui.helper.view.element({keydown: [action.item.edit.keypress, ['keyCode'], ['target', 'value']]}),
+    plug(element({keydown: [action.item.edit.keypress, ['keyCode'], ['target', 'value']]}),
       source(state.item.title.data), sink(view.item.edit.data)))
 
 exports.default = (context, statePort, viewPort, action) =>
   compose(
-    view(context, viewPort, statePort, action),
-    state(statePort, context)
-  )
+    view(context, statePort, viewPort, action, ui.helper.view),
+    state(context, statePort, ui.helper.state))
