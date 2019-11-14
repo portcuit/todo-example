@@ -1,5 +1,3 @@
-const app = require('../')
-global.subject$ = require('../main').ui(
-  app.uiPort,
-  app.ui,
-  self)
+const {ui: main} = require('../main')
+const {uiPort: port, ui: kit} = require('../')
+global.subject$ = main(port, kit, self)
