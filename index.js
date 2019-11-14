@@ -1,5 +1,5 @@
 const {compose,plug,source,sink} = require('@pkit/core')
-const {directSink,fromEmitter,switchMapZipSink} = require('@pkit/helper')
+const {directSink,fromEventSink,switchMapZipSink} = require('@pkit/helper')
 const worker = require('@pkit/worker')
 const ui = require('./ui')
 const action = require('./action')
@@ -44,7 +44,7 @@ exports.default = (port, Worker) => {
         action.item.edit.esc,
       ])(port.bridge.action),
       port.bridge.ui.terminate),
-    plug(fromEmitter(emitter, 'action')),
+    plug(fromEventSink(emitter, 'action')),
     action.default(port.bridge.action),
     snabbdom.default(port.snabbdom, port, document.body.children[0], [actionModule, ...defaultModules]),
     plug(directSink,

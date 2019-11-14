@@ -1,5 +1,5 @@
 const {compose,plug,source,sink} = require('@pkit/core')
-const {dropTo,dropBindTo,mapToSink} = require('@pkit/helper')
+const {dropSink, dropBindSink, mapToSink} = require('@pkit/helper')
 const {keyCode, add} = require('./processors')
 
 const KEY_CODE_ENTER = 13,
@@ -39,7 +39,7 @@ exports.default = action =>
 
 exports.ui = (action, state) =>
   compose(
-    plug(dropTo(2),
+    plug(dropSink(2),
       source(action.newTodo.enter), sink(state.newTodo.update)),
     plug(mapToSink(),
       source(action.newTodo.enter), sink(state.item.collection.add)),
@@ -48,15 +48,15 @@ exports.ui = (action, state) =>
       source(state.item.collection.data)),
     plug(mapToSink(''),
       source(action.newTodo.enter), sink(state.newTodo.update)),
-    plug(dropTo(1),
+    plug(dropSink(1),
       source(action.item.completed.change), sink(state.item.completed.update)),
-    plug(dropBindTo(1, null),
+    plug(dropBindSink(1, null),
       source(action.item.destroy.click), sink(state.item.collection.update)),
-    plug(dropBindTo(1, true),
+    plug(dropBindSink(1, true),
       source(action.item.title.dblclick), sink(state.item.editing.update)),
-    plug(dropTo(2),
+    plug(dropSink(2),
       source(action.item.edit.enter), sink(state.item.title.update)),
-    plug(dropBindTo(3, false),
+    plug(dropBindSink(3, false),
       source(action.item.edit.enter), sink(state.item.editing.update)),
-    plug(dropBindTo(3, false),
+    plug(dropBindSink(3, false),
       source(action.item.edit.esc), sink(state.item.editing.update)))
