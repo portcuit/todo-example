@@ -5,6 +5,29 @@ const {keyCode, add} = require('./processors')
 const KEY_CODE_ENTER = 13,
   KEY_CODE_ESC = 27
 
+exports.port = {
+  newTodo: {
+    keypress: null,
+    enter: null
+  },
+  item: {
+    title: {
+      dblclick: null
+    },
+    completed: {
+      change: null,
+    },
+    destroy: {
+      click: null
+    },
+    edit: {
+      keypress: null,
+      enter: null,
+      esc: null
+    }
+  }
+}
+
 exports.default = action =>
   compose(
     plug(keyCode(KEY_CODE_ENTER),

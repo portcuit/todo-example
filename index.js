@@ -2,6 +2,7 @@ const {compose,plug,source,sink} = require('@pkit/core')
 const {directSink,fromEmitter} = require('@pkit/helper')
 const worker = require('@pkit/worker')
 const ui = require('./ui')
+const action = require('./action')
 const snabbdom = require('@pkit/snabbdom/port')
 const {context} = require('@pkit/core/port')
 
@@ -17,28 +18,7 @@ exports.port = {
   snabbdom,
   worker: worker.port,
   ui: ui.port,
-  action: {
-    newTodo: {
-      keypress: null,
-      enter: null
-    },
-    item: {
-      title: {
-        dblclick: null
-      },
-      completed: {
-        change: null,
-      },
-      destroy: {
-        click: null
-      },
-      edit: {
-        keypress: null,
-        enter: null,
-        esc: null
-      }
-    }
-  }
+  action: action.port
 }
 
 exports.default = (port, Worker) => {
@@ -64,7 +44,7 @@ exports.default = (port, Worker) => {
       port.context.ui.terminate,
       port.context.main.terminate),
     plug(fromEmitter(emitter, 'action')),
-    require('./action').default(port.action),
+    action.default(port.action),
     require('@pkit/snabbdom').default(port.snabbdom, port, document.body.children[0], [actionModule, ...defaultModules]),
     plug(directSink, source(port.ui.view.vnode), sink(port.snabbdom.render)))
 }
@@ -76,6 +56,5 @@ exports.ui = (port, parent) =>
       port.context.ui.terminated),
     plug(directSink, source(port.context.main.terminate), sink(port.context.ui.terminate)),
     plug(directSink, source(port.context.ui.terminate), sink(port.context.ui.terminated)),
-    require('./action').ui(port.action, port.ui.state),
-    ui.default(
-      port, port.ui.state, port.ui.view, port.action))
+    action.ui(port.action, port.ui.state),
+    ui.default(port, port.ui.state, port.ui.view, port.action))
