@@ -1,11 +1,11 @@
-const {prepare} = require('@pkit/core')
-const snabbdom = require('@pkit/snabbdom/port').raw
-const worker = require('@pkit/worker/port').raw
-const context = require('@pkit/core/port/context').raw
-const store = require('@pkit/uikit/port/store')
-const ui = require('@pkit/uikit/port/ui')
+const snabbdom = require('@pkit/snabbdom/port')
+const {port: worker} = require('@pkit/worker')
+const {context} = require('@pkit/core/port')
+const state = require('@pkit/uikit/port/store')
+const view = require('@pkit/uikit/port/ui')
 
-module.exports = prepare({
+module.exports = {
+  ...context,
   context: {
     main: context,
     ui: {
@@ -17,34 +17,34 @@ module.exports = prepare({
   worker: worker,
   store: {
     state: {
-      ...store.container,
-      root: store.attribute,
-      newTodo: store.attribute,
+      ...state.container,
+      root: state.attribute,
+      newTodo: state.attribute,
       item: {
-        ...store.container,
+        ...state.container,
         collection: {
-          ...store.collection,
+          ...state.collection,
           add: null
         },
-        title: store.attribute,
-        completed: store.attribute,
-        editing: store.attribute
+        title: state.attribute,
+        completed: state.attribute,
+        editing: state.attribute
       },
       left: null
     }
   },
   ui: {
-    ...ui.container,
-    newTodo: ui.element,
+    ...view.container,
+    newTodo: view.element,
     item: {
-      ...ui.container,
-      collection: ui.collection,
-      title: ui.element,
-      destroy: ui.element,
-      completed: ui.element,
-      edit: ui.element
+      ...view.container,
+      collection: view.collection,
+      title: view.element,
+      destroy: view.element,
+      completed: view.element,
+      edit: view.element
     },
-    left: ui.element
+    left: view.element
   },
   action: {
     newTodo: {
@@ -68,4 +68,4 @@ module.exports = prepare({
       }
     }
   }
-})
+}

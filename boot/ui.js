@@ -1,1 +1,4 @@
-require('../main').ui()
+require('../main').ui(
+  require('../port'),
+  require('../').ui,
+  self)
