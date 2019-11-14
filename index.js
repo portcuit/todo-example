@@ -1,6 +1,45 @@
 const {compose,plug,source,sink} = require('@pkit/core')
 const {directSink,fromEmitter} = require('@pkit/helper')
 const worker = require('@pkit/worker')
+const ui = require('./ui')
+const snabbdom = require('@pkit/snabbdom/port')
+const {context} = require('@pkit/core/port')
+
+exports.port = {
+  ...context,
+  context: {
+    main: context,
+    ui: {
+      ...context,
+      reload: null
+    }
+  },
+  snabbdom,
+  worker: worker.port,
+  ui: ui.port,
+  action: {
+    newTodo: {
+      keypress: null,
+      enter: null
+    },
+    item: {
+      title: {
+        dblclick: null
+      },
+      completed: {
+        change: null,
+      },
+      destroy: {
+        click: null
+      },
+      edit: {
+        keypress: null,
+        enter: null,
+        esc: null
+      }
+    }
+  }
+}
 
 exports.default = (port, Worker) => {
   const {EventEmitter} = require('events')
@@ -16,7 +55,6 @@ exports.default = (port, Worker) => {
   return compose(
     worker.useParentWorker(port.worker.parent, port, Worker,
       `${__dirname}/boot/ui.js`,
-      port.store.state.update,
       port.action.newTodo.enter,
       port.action.item.completed.change,
       port.action.item.destroy.click,
@@ -28,19 +66,16 @@ exports.default = (port, Worker) => {
     plug(fromEmitter(emitter, 'action')),
     require('./action').default(port.action),
     require('@pkit/snabbdom').default(port.snabbdom, port, document.body.children[0], [actionModule, ...defaultModules]),
-    plug(directSink, source(port.ui.vnode), sink(port.snabbdom.render)))
+    plug(directSink, source(port.ui.view.vnode), sink(port.snabbdom.render)))
 }
 
 exports.ui = (port, parent) =>
   compose(
     worker.useChildWorker(port.worker.child, parent,
-      port.ui.vnode,
+      port.ui.view.vnode,
       port.context.ui.terminated),
     plug(directSink, source(port.context.main.terminate), sink(port.context.ui.terminate)),
     plug(directSink, source(port.context.ui.terminate), sink(port.context.ui.terminated)),
-    require('./action').ui(port.action, port.store.state),
-    require('./ui').default(port, port.ui, port.store.state, port.action,
-      {...require('./ui/view'), item: require('./ui/view/item')}),
-    require('./store/state').default(port.store.state, port,
-      {init: require('./store/state/initial'), item: require('./store/state/initial/item')}),
-  )
+    require('./action').ui(port.action, port.ui.state),
+    ui.default(
+      port, port.ui.state, port.ui.view, port.action))
