@@ -34,7 +34,7 @@ exports.default = (port, Worker) => {
 `
   return compose(
     worker.useParentWorker(port.worker, port, Worker,
-      `${__dirname}/boot/ui.js`,
+      `${__dirname}/main/ui.js`,
       ...(action => [
         action.newTodo.enter,
         action.item.completed.change,
