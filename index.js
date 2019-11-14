@@ -14,10 +14,6 @@ exports.default = (port, Worker) => {
 @import url("https://unpkg.com/todomvc-app-css@2.3.0/index.css");
 `
   return compose(
-    plug(directSink, source(port.ui.vnode), sink(port.snabbdom.render)),
-    plug(fromEmitter(emitter, 'action')),
-    require('./action').default(port.action),
-
     worker.useParentWorker(port.worker.parent, port, Worker,
       `${__dirname}/boot/ui.js`,
       port.store.state.update,
@@ -29,31 +25,22 @@ exports.default = (port, Worker) => {
       port.action.item.edit.esc,
       port.context.ui.terminate,
       port.context.main.terminate),
-
-    // require('@pkit/snabbdom').default(port.snabbdom, port.context.main, document.body.children[0], [actionModule, ...defaultModules]),
-    // require('./logic/lifecycle').default(port.context, port.worker, `${__dirname}/boot/ui.js`),
-    // require('@pkit/worker').default(port.context.ui, port.worker, [
-    //   port.store.state.update,
-    //   port.action.newTodo.enter,
-    //   port.action.item.completed.change,
-    //   port.action.item.destroy.click,
-    //   port.action.item.title.dblclick,
-    //   port.action.item.edit.enter,
-    //   port.action.item.edit.esc,
-    //   port.context.ui.terminate,
-    //   port.context.main.terminate])
-  )
+    plug(fromEmitter(emitter, 'action')),
+    require('./action').default(port.action),
+    require('@pkit/snabbdom').default(port.snabbdom, port, document.body.children[0], [actionModule, ...defaultModules]),
+    plug(directSink, source(port.ui.vnode), sink(port.snabbdom.render)))
 }
 
 exports.ui = (port, parent) =>
   compose(
-    plug(direct, source(port.context.main.terminate), sink(port.context.ui.terminate)),
-    plug(direct, source(port.context.ui.terminate), sink(port.context.ui.terminated)),
-    require('./action').ui(port.action, port.store.state),
-    require('./ui').default(port.context.main, port.ui, port.store.state, port.action,
-      {...require('./ui/view'), item: require('./ui/view/item')}),
-    require('./store/state').default(port.store.state, port.context.main,
-      {init: require('./store/state/initial'), item: require('./store/state/initial/item')}),
-    require('@pkit/worker').server(port.worker.serverPost, [
+    worker.useChildWorker(port.worker.child, parent,
       port.ui.vnode,
-      port.context.ui.terminated]))
+      port.context.ui.terminated),
+    plug(directSink, source(port.context.main.terminate), sink(port.context.ui.terminate)),
+    plug(directSink, source(port.context.ui.terminate), sink(port.context.ui.terminated)),
+    require('./action').ui(port.action, port.store.state),
+    require('./ui').default(port, port.ui, port.store.state, port.action,
+      {...require('./ui/view'), item: require('./ui/view/item')}),
+    require('./store/state').default(port.store.state, port,
+      {init: require('./store/state/initial'), item: require('./store/state/initial/item')}),
+  )
