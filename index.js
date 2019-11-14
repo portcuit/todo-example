@@ -1,24 +1,24 @@
 const {compose,plug,source,sink} = require('@pkit/core')
-const {directSink,fromEmitter} = require('@pkit/helper')
+const {directSink,fromEmitter,switchMapZipSink} = require('@pkit/helper')
 const worker = require('@pkit/worker')
 const ui = require('./ui')
 const action = require('./action')
 const snabbdom = require('@pkit/snabbdom')
 const {context} = require('@pkit/core/port')
 
+const bridge = {
+  ui: {
+    ...context,
+    reload: null
+  },
+  action: action.port
+}
+
 exports.port = {
   ...context,
-  context: {
-    main: context,
-    ui: {
-      ...context,
-      reload: null
-    }
-  },
   snabbdom: snabbdom.port,
-  worker: worker.port,
-  ui: ui.port,
-  action: action.port
+  worker: worker.port.parent,
+  bridge
 }
 
 exports.default = (port, Worker) => {
@@ -32,28 +32,40 @@ exports.default = (port, Worker) => {
 @import url("https://unpkg.com/todomvc-app-css@2.3.0/index.css");
 `
   return compose(
-    worker.useParentWorker(port.worker.parent, port, Worker,
+    worker.useParentWorker(port.worker, port, Worker,
       `${__dirname}/boot/ui.js`,
-      port.action.newTodo.enter,
-      port.action.item.completed.change,
-      port.action.item.destroy.click,
-      port.action.item.title.dblclick,
-      port.action.item.edit.enter,
-      port.action.item.edit.esc,
-      port.context.ui.terminate,
-      port.context.main.terminate),
+      ...(action => [
+        action.newTodo.enter,
+        action.item.completed.change,
+        action.item.destroy.click,
+        action.item.title.dblclick,
+        action.item.edit.enter,
+        action.item.edit.esc,
+      ])(port.bridge.action),
+      port.bridge.ui.terminate),
     plug(fromEmitter(emitter, 'action')),
-    action.default(port.action),
+    action.default(port.bridge.action),
     snabbdom.default(port.snabbdom, port, document.body.children[0], [actionModule, ...defaultModules]),
-    plug(directSink, source(port.ui.view.vnode), sink(port.snabbdom.render)))
+    plug(directSink, source(port.ui.view.vnode), sink(port.snabbdom.render)),
+    plug(directSink, source(port.terminate), sink(port.bridge.ui.terminate)),
+    plug(switchMapZipSink,
+      source(port.terminate),
+      sink(port.quit),
+      source(port.bridge.ui.terminated)))
+}
+
+exports.uiPort = {
+  ...context,
+  worker: worker.port.child,
+  ui: ui.port,
+  bridge
 }
 
 exports.ui = (port, parent) =>
   compose(
-    worker.useChildWorker(port.worker.child, parent,
+    worker.useChildWorker(port.worker, parent,
       port.ui.view.vnode,
-      port.context.ui.terminated),
-    plug(directSink, source(port.context.main.terminate), sink(port.context.ui.terminate)),
-    plug(directSink, source(port.context.ui.terminate), sink(port.context.ui.terminated)),
-    action.ui(port.action, port.ui.state),
-    ui.default(port, port.ui.state, port.ui.view, port.action))
+      port.bridge.ui.terminated),
+    plug(directSink, source(port.bridge.ui.terminate), sink(port.bridge.ui.terminated)),
+    action.ui(port.bridge.action, port.ui.state),
+    ui.default(port, port.ui.state, port.ui.view, port.bridge.action))

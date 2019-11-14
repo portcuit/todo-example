@@ -1,5 +1,5 @@
 const app = require('../')
 global.subject$ = require('../main').ui(
-  app.port,
+  app.uiPort,
   app.ui,
   self)
