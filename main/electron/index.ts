@@ -6,7 +6,7 @@ import * as electron from '@pkit/electron'
 const port = {
   ...context,
   electron: electron.port
-}
+};
 
 const options = {
   width: 1920,
@@ -15,7 +15,7 @@ const options = {
     nodeIntegration: true,
     nodeIntegrationInWorker: true
   }
-}
+};
 
 const main = port =>
   compose(
@@ -29,4 +29,4 @@ const main = port =>
 
 Object.assign(globalThis, {
   subject$: require('../../main').electron(port, main)
-})
+});
