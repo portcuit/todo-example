@@ -1,4 +1,5 @@
 const {compose,plug,source,sink} = require('@pkit/core')
+const {mapToSink} = require('@pkit/helper')
 const ui = require('@pkit/ui')
 const initial = require('./initial')
 const template = require('./template')
@@ -36,11 +37,11 @@ exports.port = {
   }
 }
 
-const state = (context, state, {attribute, container, base, add, init}) =>
+const state = (context, state, {attribute, container, base, add}) =>
   compose(
     plug(left,
       source(state.item.collection.data), sink(state.left)),
-    plug(init(initial.state),
+    plug(mapToSink(initial.state),
       source(context.init), sink(state.update)),
     attribute(state.item.editing, state.item, state, ['editing'], ['items', 0, 'editing']),
     attribute(state.item.completed, state.item, state, ['completed'], ['items', 0, 'completed']),
