@@ -1,37 +1,37 @@
-const {apply} = require('ramda')
-const {of} = require('rxjs')
-const {tap,map,catchError} = require('rxjs/operators')
-const {run} = require('@pkit/core')
+import {apply} from 'ramda'
+import {of} from 'rxjs'
+import {tap,map,catchError} from 'rxjs/operators'
+import {run} from '@pkit/core'
 
-exports.default = (port, main, ...args) =>
+export default (port, main, ...args) =>
   run(port, main, args,
     stream$ =>
       stream$.pipe(
         tap(apply(console.log)),
         catchError(e => {
-          console.error(e)
-          return of()
+          console.error(e);
+          return of();
         })))
 
-exports.ui = (port, main, parent) =>
+export const ui = (port, main, parent) =>
   run(port, main, [parent],
     stream$ =>
       stream$.pipe(
         tap(apply(console.log)),
         catchError(e => {
-          console.error(e)
-          parent.postMessage(['error', e.message, e.stack])
+          console.error(e);
+          parent.postMessage(['error', e.message, e.stack]);
           return of()
-        })))
+        })));
 
-exports.electron = (port, hook, ...args) =>
+export const electron = (port, hook, ...args) =>
   run(port, hook, args,
     stream$ =>
       stream$.pipe(
-        tap(apply(console.log))),
+        tap(apply(console.log)),
     catchError(e => {
-      console.error(e)
+      console.error(e);
       return process.env.STAGE ?
         process.exit(-1) :
         of()
-    }))
+    })));

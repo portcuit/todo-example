@@ -1,7 +1,7 @@
-const {compose, plug, source, sink} = require('@pkit/core')
-const {directSink, mapToSink} = require('@pkit/helper')
-const {context} = require('@pkit/core/port')
-const electron = require('@pkit/electron')
+import {compose, plug, source, sink} from '@pkit/core'
+import {directSink, mapToSink} from '@pkit/helper'
+import {context} from '@pkit/core/port'
+import * as electron from '@pkit/electron'
 
 const port = {
   ...context,
@@ -27,4 +27,6 @@ const main = port =>
     plug(mapToSink(options),
       source(port.electron.ready), sink(port.electron.open)))
 
-global.subject$ = require('../../main').electron(port, main)
+Object.assign(globalThis, {
+  subject$: require('../../main').electron(port, main)
+})

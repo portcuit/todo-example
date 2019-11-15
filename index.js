@@ -22,7 +22,7 @@ exports.port = {
   bridge
 }
 
-exports.default = (port, Worker) => {
+exports.window = (port, Worker) => {
   const {EventEmitter} = require('events')
   const {defaultModules, action: createActionModule} = require('@pkit/snabbdom')
   const emitter = new EventEmitter
@@ -34,7 +34,7 @@ exports.default = (port, Worker) => {
 `
   return compose(
     worker.useParentWorker(port.worker, port, Worker,
-      `${__dirname}/main/ui.js`,
+      `${__dirname}/main/_ui.js`,
       ...(action => [
         action.newTodo.enter,
         action.item.completed.change,
