@@ -1,5 +1,5 @@
 const {compose,plug,source,sink} = require('@pkit/core')
-const ui = require('@pkit/uikit')
+const ui = require('@pkit/ui')
 const initial = require('./initial')
 const template = require('./template')
 const {left} = require('./processors')
