@@ -15,56 +15,56 @@ const bridge = {
   action: action.port
 };
 
-exports.port = {
-  ...context,
-  snabbdom: snabbdom.port,
-  worker: worker.port.parent,
-  bridge
-};
+// exports.port = {
+//   ...context,
+//   snabbdom: snabbdom.port,
+//   worker: worker.port.parent,
+//   bridge
+// };
+//
+// exports.window = (port, Worker) => {
+//   const {EventEmitter} = require('events');
+//   const {defaultModules, action: createActionModule} = require('@pkit/snabbdom');
+//   const emitter = new EventEmitter;
+//   const actionModule = createActionModule(emitter, 'action');
+//   const {injectGlobal} = require('emotion');
+//
+//   injectGlobal`
+// @import url("https://unpkg.com/todomvc-app-css@2.3.0/index.css");
+// `
+//   return compose(
+//     worker.useParentWorker(port.worker, port, Worker,
+//       `${__dirname}/main/_ui.js`,
+//       ...(action => [
+//         action.newTodo.enter,
+//         action.item.completed.change,
+//         action.item.destroy.click,
+//         action.item.title.dblclick,
+//         action.item.edit.enter,
+//         action.item.edit.esc,
+//       ])(port.bridge.action),
+//       port.bridge.ui.terminate),
+//     plug(fromEventSink(emitter, 'action')),
+//     action.default(port.bridge.action),
+//     snabbdom.default(port.snabbdom, port, document.body.children[0], [actionModule, ...defaultModules]),
+//     plug(directSink,
+//       source(port.bridge.vnode), sink(port.snabbdom.render)),
+//     plug(directSink,
+//       source(port.terminate), sink(port.bridge.ui.terminate)),
+//     plug(switchMapZipSink,
+//       source(port.terminate),
+//       sink(port.quit),
+//       source(port.bridge.ui.terminated)))
+// };
 
-exports.window = (port, Worker) => {
-  const {EventEmitter} = require('events');
-  const {defaultModules, action: createActionModule} = require('@pkit/snabbdom');
-  const emitter = new EventEmitter;
-  const actionModule = createActionModule(emitter, 'action');
-  const {injectGlobal} = require('emotion');
-
-  injectGlobal`
-@import url("https://unpkg.com/todomvc-app-css@2.3.0/index.css");
-`
-  return compose(
-    worker.useParentWorker(port.worker, port, Worker,
-      `${__dirname}/main/_ui.js`,
-      ...(action => [
-        action.newTodo.enter,
-        action.item.completed.change,
-        action.item.destroy.click,
-        action.item.title.dblclick,
-        action.item.edit.enter,
-        action.item.edit.esc,
-      ])(port.bridge.action),
-      port.bridge.ui.terminate),
-    plug(fromEventSink(emitter, 'action')),
-    action.default(port.bridge.action),
-    snabbdom.default(port.snabbdom, port, document.body.children[0], [actionModule, ...defaultModules]),
-    plug(directSink,
-      source(port.bridge.vnode), sink(port.snabbdom.render)),
-    plug(directSink,
-      source(port.terminate), sink(port.bridge.ui.terminate)),
-    plug(switchMapZipSink,
-      source(port.terminate),
-      sink(port.quit),
-      source(port.bridge.ui.terminated)))
-};
-
-exports.uiPort = {
+export const uiPort = {
   ...context,
   worker: worker.port.child,
   ui: ui.port,
   bridge
 };
 
-exports.ui = (port, parent) =>
+const _ui = (port, parent) =>
   compose(
     worker.useChildWorker(port.worker, parent,
       port.bridge.vnode,
@@ -73,3 +73,5 @@ exports.ui = (port, parent) =>
     plug(directSink, source(port.bridge.ui.terminate), sink(port.bridge.ui.terminated)),
     action.ui(port.bridge.action, port.ui.state),
     ui.default(port, port.ui.state, port.ui.view, port.bridge.action));
+
+export {_ui as ui}

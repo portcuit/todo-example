@@ -1,4 +1,4 @@
-import {h} from '@pkit/snabbdom'
+import {h} from '../../vendor/@pkit/snabbdom'
 
 export const item = ([title, completed, destroy, edit]) =>
   <li class={{
