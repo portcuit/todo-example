@@ -1,10 +1,10 @@
-const {compose,plug,source,sink} = require('@pkit/core')
-const {directSink,fromEventSink,switchMapZipSink} = require('@pkit/helper')
-const worker = require('@pkit/worker')
-const ui = require('./ui')
-const action = require('./action')
-const snabbdom = require('@pkit/snabbdom')
-const {context} = require('@pkit/core/port')
+import {compose,plug,source,sink} from '@pkit/core'
+import {directSink,fromEventSink,switchMapZipSink} from '@pkit/helper'
+import * as worker from '@pkit/worker'
+import * as ui from './ui'
+import * as action from './action'
+import * as snabbdom from '@pkit/snabbdom'
+import {context} from '@pkit/core/port'
 
 const bridge = {
   vnode: null,
@@ -13,21 +13,21 @@ const bridge = {
     reload: null
   },
   action: action.port
-}
+};
 
 exports.port = {
   ...context,
   snabbdom: snabbdom.port,
   worker: worker.port.parent,
   bridge
-}
+};
 
 exports.window = (port, Worker) => {
-  const {EventEmitter} = require('events')
-  const {defaultModules, action: createActionModule} = require('@pkit/snabbdom')
-  const emitter = new EventEmitter
-  const actionModule = createActionModule(emitter, 'action')
-  const {injectGlobal} = require('emotion')
+  const {EventEmitter} = require('events');
+  const {defaultModules, action: createActionModule} = require('@pkit/snabbdom');
+  const emitter = new EventEmitter;
+  const actionModule = createActionModule(emitter, 'action');
+  const {injectGlobal} = require('emotion');
 
   injectGlobal`
 @import url("https://unpkg.com/todomvc-app-css@2.3.0/index.css");
@@ -55,14 +55,14 @@ exports.window = (port, Worker) => {
       source(port.terminate),
       sink(port.quit),
       source(port.bridge.ui.terminated)))
-}
+};
 
 exports.uiPort = {
   ...context,
   worker: worker.port.child,
   ui: ui.port,
   bridge
-}
+};
 
 exports.ui = (port, parent) =>
   compose(
@@ -72,4 +72,4 @@ exports.ui = (port, parent) =>
     plug(directSink, source(port.ui.view.vnode), sink(port.bridge.vnode)),
     plug(directSink, source(port.bridge.ui.terminate), sink(port.bridge.ui.terminated)),
     action.ui(port.bridge.action, port.ui.state),
-    ui.default(port, port.ui.state, port.ui.view, port.bridge.action))
+    ui.default(port, port.ui.state, port.ui.view, port.bridge.action));
