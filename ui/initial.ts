@@ -1,10 +1,10 @@
-exports.state = {
+export const state = {
   "newTodo": "",
   "items": []
-}
+};
 
-exports.item = {
+export const item = {
   "title": "",
   "completed": false,
   "editing": false
-}
+};

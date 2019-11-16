@@ -1,11 +1,11 @@
-const {compose,plug,source,sink} = require('@pkit/core')
-const {mapToSink} = require('@pkit/helper')
-const ui = require('@pkit/ui')
-const initial = require('./initial')
-const template = require('./template')
-const {left} = require('./processors')
+import {compose,plug,source,sink} from '@pkit/core'
+import {mapToSink} from '@pkit/helper'
+import * as ui from '@pkit/ui'
+import * as initial from './initial'
+import * as template from './template'
+import {left} from './processors'
 
-exports.port = {
+export const port = {
   state: {
     ...ui.port.state.container,
     root: ui.port.state.attribute,
@@ -35,7 +35,7 @@ exports.port = {
     },
     left: ui.port.view.element
   }
-}
+};
 
 const state = (context, state, {attribute, container, base, add}) =>
   compose(
@@ -50,7 +50,7 @@ const state = (context, state, {attribute, container, base, add}) =>
     add(state.item.collection, initial.item),
     attribute(state.item.collection, state, state, ['items'], ['items', 0]),
     attribute(state.newTodo, state, state, ['newTodo'], ['newTodo']),
-    base(state, {}))
+    base(state, {}));
 
 const view = (context, state, view, action, {vnode, container, element, containerCollection}) =>
   compose(
@@ -80,9 +80,9 @@ const view = (context, state, view, action, {vnode, container, element, containe
     plug(element({click: [action.item.destroy.click]}),
       source(state.item.data), sink(view.item.destroy.data)),
     plug(element({keydown: [action.item.edit.keypress, ['keyCode'], ['target', 'value']]}),
-      source(state.item.title.data), sink(view.item.edit.data)))
+      source(state.item.title.data), sink(view.item.edit.data)));
 
-exports.default = (context, statePort, viewPort, action) =>
+export default (context, statePort, viewPort, action) =>
   compose(
     view(context, statePort, viewPort, action, ui.helper.view),
     state(context, statePort, ui.helper.state))
