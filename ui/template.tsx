@@ -2,18 +2,18 @@ import {h} from '@pkit/snabbdom'
 
 export const item = ([title, completed, destroy, edit]) =>
   <li class={{
-    editing: destroy.store.editing,
-    completed: destroy.store.completed
+    editing: destroy.data.editing,
+    completed: destroy.data.completed
   }}>
     <div class={{view: true}}>
       <input class={{toggle: true}} {...completed} props={{
         type: 'checkbox',
-        checked: completed.store
+        checked: completed.data
       }} />
-      <label {...title}>{title.store}</label>
+      <label {...title}>{title.data}</label>
       <button class={{destroy: true}} {...destroy} />
     </div>
-    <input class={{edit: true}} {...edit} props={{value: edit.store}} />
+    <input class={{edit: true}} {...edit} props={{value: edit.data}} />
   </li>;
 
 export const app = ([newTodo, items, left]) =>
@@ -21,7 +21,7 @@ export const app = ([newTodo, items, left]) =>
     <header class={{todo: true}}>
       <h1>todos</h1>
       <input class={{'new-todo': true}} {...newTodo} props={{
-        value: newTodo.store,
+        value: newTodo.data,
         placeholder: 'What needs to be done?',
         autofocus: true
       }} />
@@ -34,7 +34,7 @@ export const app = ([newTodo, items, left]) =>
     <footer class={{footer: true}}>
       <span class={{'todo-count': true}}>
         <strong>
-          {left.store} item left
+          {left.data} item left
         </strong>
       </span>
     </footer>
