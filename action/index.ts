@@ -1,11 +1,11 @@
-const {compose,plug,source,sink} = require('@pkit/core')
-const {dropSink, dropBindSink, mapToSink} = require('@pkit/helper')
-const {keyCode, add} = require('./processors')
+import {compose,plug,source,sink} from '@pkit/core'
+import {dropSink, dropBindSink, mapToSink} from '@pkit/helper'
+import {keyCode, add} from './processors'
 
 const KEY_CODE_ENTER = 13,
-  KEY_CODE_ESC = 27
+  KEY_CODE_ESC = 27;
 
-exports.port = {
+export const port = {
   newTodo: {
     keypress: null,
     enter: null
@@ -26,9 +26,9 @@ exports.port = {
       esc: null
     }
   }
-}
+};
 
-exports.default = action =>
+export default action =>
   compose(
     plug(keyCode(KEY_CODE_ENTER),
       source(action.newTodo.keypress), sink(action.newTodo.enter)),
@@ -37,7 +37,7 @@ exports.default = action =>
     plug(keyCode(KEY_CODE_ESC),
       source(action.item.edit.keypress), sink(action.item.edit.esc)))
 
-exports.ui = (action, state) =>
+export const ui = (action, state) =>
   compose(
     plug(dropSink(2),
       source(action.newTodo.enter), sink(state.newTodo.update)),
