@@ -15,13 +15,13 @@ const bridge = {
   action: action.port
 };
 
-// exports.port = {
-//   ...context,
-//   snabbdom: snabbdom.port,
-//   worker: worker.port.parent,
-//   bridge
-// };
-//
+export const port = {
+  ...context,
+  snabbdom: snabbdom.port,
+  worker: worker.port.parent,
+  bridge
+};
+
 // exports.window = (port, Worker) => {
 //   const {EventEmitter} = require('events');
 //   const {defaultModules, action: createActionModule} = require('@pkit/snabbdom');
