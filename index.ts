@@ -41,7 +41,7 @@ export const window = (port, Worker) => {
       ])(port.bridge.action),
       port.bridge.ui.terminate),
     plug(fromEventSink(emitter, 'action')),
-    action.default(port.bridge.action),
+    action.window(port.bridge.action),
     snabbdom.default(port.snabbdom, port, document.body.children[0],
       [actionModule, ...snabbdom.defaultModules]),
     plug(directSink,

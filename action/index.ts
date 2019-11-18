@@ -28,14 +28,14 @@ export const port = {
   }
 };
 
-export default action =>
+export const window = action =>
   compose(
     plug(keyCode(KEY_CODE_ENTER),
       source(action.newTodo.keypress), sink(action.newTodo.enter)),
     plug(keyCode(KEY_CODE_ENTER),
       source(action.item.edit.keypress), sink(action.item.edit.enter)),
     plug(keyCode(KEY_CODE_ESC),
-      source(action.item.edit.keypress), sink(action.item.edit.esc)))
+      source(action.item.edit.keypress), sink(action.item.edit.esc)));
 
 export const ui = (action, state) =>
   compose(
@@ -59,4 +59,4 @@ export const ui = (action, state) =>
     plug(dropBindSink(3, false),
       source(action.item.edit.enter), sink(state.item.editing.update)),
     plug(dropBindSink(3, false),
-      source(action.item.edit.esc), sink(state.item.editing.update)))
+      source(action.item.edit.esc), sink(state.item.editing.update)));
