@@ -19,9 +19,9 @@
   "homepage": "https://github.com/portcuit/todo-example#readme",
   "dependencies": {
     "@pkit/electron": "~0.1.0",
-    "@pkit/snabbdom": "github:portcuit/snabbdom#v0.0.1",
-    "@pkit/uikit": "github:portcuit/uikit#v0.0.1",
-    "@pkit/worker": "github:portcuit/worker#v0.0.2",
+    "@pkit/snabbdom": "~0.1.0",
+    "@pkit/ui": "~0.1.0",
+    "@pkit/worker": "~0.1.0",
     "emotion": "^10.0.23"
   },
   "devDependencies": {
