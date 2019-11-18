@@ -1,3 +1,5 @@
+import {EventEmitter} from 'events'
+import {injectGlobal} from 'emotion'
 import {compose,plug,source,sink} from '@pkit/core'
 import {directSink,fromEventSink,switchMapZipSink} from '@pkit/helper'
 import * as worker from '@pkit/worker'
@@ -6,16 +8,9 @@ import * as action from './action'
 import * as snabbdom from '@pkit/snabbdom'
 import {context} from '@pkit/core/port'
 
-import {EventEmitter} from 'events'
-import {injectGlobal} from 'emotion'
-
-
 const bridge = {
   vnode: null,
-  ui: {
-    ...context,
-    reload: null
-  },
+  ui: context,
   action: action.port
 };
 
@@ -35,8 +30,7 @@ export const window = (port, Worker) => {
 `;
 
   return compose(
-    worker.useParentWorker(port.worker, port, Worker,
-      `./_ui.js`,
+    worker.useParentWorker(port.worker, port, Worker, `./ui.js`,
       ...(action => [
         action.newTodo.enter,
         action.item.completed.change,
