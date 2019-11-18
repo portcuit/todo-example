@@ -36,7 +36,7 @@ export const window = (port, Worker) => {
 
   return compose(
     worker.useParentWorker(port.worker, port, Worker,
-      `${__dirname}/main/_ui.js`,
+      `./_ui.js`,
       ...(action => [
         action.newTodo.enter,
         action.item.completed.change,
