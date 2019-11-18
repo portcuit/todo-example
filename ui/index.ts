@@ -39,8 +39,7 @@ export const port = {
 
 const state = (context, state, {attribute, container, base, add}) =>
   compose(
-    plug(left,
-      source(state.item.collection.data), sink(state.left)),
+    left(source(state.item.collection.data), sink(state.left)),
     plug(mapToSink(initial.state),
       source(context.init), sink(state.update)),
     attribute(state.item.editing, state.item, state, ['editing'], ['items', 0, 'editing']),
@@ -54,33 +53,31 @@ const state = (context, state, {attribute, container, base, add}) =>
 
 const view = (context, state, view, action, {vnode, container, element, containerCollection}) =>
   compose(
-    plug(vnode(template.app),
-      source(view.data), sink(view.vnode)),
-    plug(container,
-      source(context.init), sink(view.data),
+    vnode(source(view.data), sink(view.vnode),
+      template.app),
+    container(source(context.init), sink(view.data),
       source(view.newTodo.data),
       source(view.item.collection.data),
       source(view.left.data)),
-    plug(element({keypress: [action.newTodo.keypress, ['keyCode'], ['target', 'value']]}),
-      source(state.newTodo.data), sink(view.newTodo.data)),
-    plug(element(),
-      source(state.left), sink(view.left.data)),
+    element(source(state.newTodo.data), sink(view.newTodo.data),
+      {keypress: [action.newTodo.keypress, ['keyCode'], ['target', 'value']]}),
+    element(source(state.left), sink(view.left.data)),
     containerCollection(
       state.item, view.item,
       state.item.collection, view.item.collection,
       template.item,
-      view.item.title.data,
-      view.item.completed.data,
-      view.item.destroy.data,
-      view.item.edit.data),
-    plug(element({dblclick: [action.item.title.dblclick]}),
-      source(state.item.title.data), sink(view.item.title.data)),
-    plug(element({change: [action.item.completed.change, ['target', 'checked']]}),
-      source(state.item.completed.data), sink(view.item.completed.data)),
-    plug(element({click: [action.item.destroy.click]}),
-      source(state.item.data), sink(view.item.destroy.data)),
-    plug(element({keydown: [action.item.edit.keypress, ['keyCode'], ['target', 'value']]}),
-      source(state.item.title.data), sink(view.item.edit.data)));
+      source(view.item.title.data),
+      source(view.item.completed.data),
+      source(view.item.destroy.data),
+      source(view.item.edit.data)),
+    element(source(state.item.title.data), sink(view.item.title.data),
+      {dblclick: [action.item.title.dblclick]}),
+    element(source(state.item.completed.data), sink(view.item.completed.data),
+      {change: [action.item.completed.change, ['target', 'checked']]}),
+    element(source(state.item.data), sink(view.item.destroy.data),
+      {click: [action.item.destroy.click]}),
+    element(source(state.item.title.data), sink(view.item.edit.data),
+      {keydown: [action.item.edit.keypress, ['keyCode'], ['target', 'value']]}));
 
 export default (context, statePort, viewPort, action) =>
   compose(
