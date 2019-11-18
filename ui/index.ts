@@ -1,67 +1,73 @@
 import {compose,plug,source,sink} from '@pkit/core'
 import {mapToSink} from '@pkit/helper'
-import * as ui from '@pkit/ui'
+import {
+  containerStatePort, attributeStatePort, collectionStatePort,
+  elementViewPort, containerViewPort, collectionViewPort,
+  baseState, containerState, attributeState, addState,
+  vnode, elementView, containerView, containerCollection
+} from '@pkit/ui'
+import {left} from './processors'
 import * as initial from './initial'
 import * as template from './template'
-import {left} from './processors'
+
 
 export const port = {
   state: {
-    ...ui.port.state.container,
-    root: ui.port.state.attribute,
-    newTodo: ui.port.state.attribute,
+    ...containerStatePort,
+    root: attributeStatePort,
+    newTodo: attributeStatePort,
     item: {
-      ...ui.port.state.container,
+      ...containerStatePort,
       collection: {
-        ...ui.port.state.collection,
+        ...collectionStatePort,
         add: null
       },
-      title: ui.port.state.attribute,
-      completed: ui.port.state.attribute,
-      editing: ui.port.state.attribute
+      title: attributeStatePort,
+      completed: attributeStatePort,
+      editing: attributeStatePort
     },
     left: null
   },
   view: {
-    ...ui.port.view.container,
-    newTodo: ui.port.view.element,
+    ...containerViewPort,
+    newTodo: elementViewPort,
     item: {
-      ...ui.port.view.container,
-      collection: ui.port.view.collection,
-      title: ui.port.view.element,
-      destroy: ui.port.view.element,
-      completed: ui.port.view.element,
-      edit: ui.port.view.element
+      ...containerViewPort,
+      collection: collectionViewPort,
+      title: elementViewPort,
+      destroy: elementViewPort,
+      completed: elementViewPort,
+      edit: elementViewPort
     },
-    left: ui.port.view.element
+    left: elementViewPort
   }
 };
 
-const state = (context, state, {attribute, container, base, add}) =>
+const state = (context, state) =>
   compose(
     left(source(state.item.collection.data), sink(state.left)),
     plug(mapToSink(initial.state),
       source(context.init), sink(state.update)),
-    attribute(state.item.editing, state.item, state, ['editing'], ['items', 0, 'editing']),
-    attribute(state.item.completed, state.item, state, ['completed'], ['items', 0, 'completed']),
-    attribute(state.item.title, state.item, state, ['title'], ['items', 0, 'title']),
-    container(state.item.collection, state.item),
-    add(state.item.collection, initial.item),
-    attribute(state.item.collection, state, state, ['items'], ['items', 0]),
-    attribute(state.newTodo, state, state, ['newTodo'], ['newTodo']),
-    base(state, {}));
+    attributeState(state.item.editing, state.item, state, ['editing'], ['items', 0, 'editing']),
+    attributeState(state.item.completed, state.item, state, ['completed'], ['items', 0, 'completed']),
+    attributeState(state.item.title, state.item, state, ['title'], ['items', 0, 'title']),
+    containerState(state.item.collection, state.item),
+    addState(state.item.collection, initial.item),
+    attributeState(state.item.collection, state, state, ['items'], ['items', 0]),
+    attributeState(state.newTodo, state, state, ['newTodo'], ['newTodo']),
+    baseState(state, {}));
 
-const view = (context, state, view, action, {vnode, container, element, containerCollection}) =>
+const view = (context, state, view, action) =>
   compose(
     vnode(source(view.data), sink(view.vnode),
       template.app),
-    container(source(context.init), sink(view.data),
+    containerView(source(context.init), sink(view.data),
       source(view.newTodo.data),
       source(view.item.collection.data),
       source(view.left.data)),
-    element(source(state.newTodo.data), sink(view.newTodo.data),
+    elementView(source(state.newTodo.data), sink(view.newTodo.data),
       {keypress: [action.newTodo.keypress, ['keyCode'], ['target', 'value']]}),
-    element(source(state.left), sink(view.left.data)),
+    elementView(source(state.left), sink(view.left.data)),
     containerCollection(
       state.item, view.item,
       state.item.collection, view.item.collection,
@@ -70,16 +76,16 @@ const view = (context, state, view, action, {vnode, container, element, containe
       source(view.item.completed.data),
       source(view.item.destroy.data),
       source(view.item.edit.data)),
-    element(source(state.item.title.data), sink(view.item.title.data),
+    elementView(source(state.item.title.data), sink(view.item.title.data),
       {dblclick: [action.item.title.dblclick]}),
-    element(source(state.item.completed.data), sink(view.item.completed.data),
+    elementView(source(state.item.completed.data), sink(view.item.completed.data),
       {change: [action.item.completed.change, ['target', 'checked']]}),
-    element(source(state.item.data), sink(view.item.destroy.data),
+    elementView(source(state.item.data), sink(view.item.destroy.data),
       {click: [action.item.destroy.click]}),
-    element(source(state.item.title.data), sink(view.item.edit.data),
+    elementView(source(state.item.title.data), sink(view.item.edit.data),
       {keydown: [action.item.edit.keypress, ['keyCode'], ['target', 'value']]}));
 
 export default (context, statePort, viewPort, action) =>
   compose(
-    view(context, statePort, viewPort, action, ui.helper.view),
-    state(context, statePort, ui.helper.state))
+    view(context, statePort, viewPort, action),
+    state(context, statePort))
