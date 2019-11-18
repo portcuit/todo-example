@@ -1,7 +1,5 @@
-import {EventEmitter} from 'events'
 import {ui as main} from '../main'
-import {uiPort as port, ui as cuit} from '../'
+import {uiPort as port, uiKit as cuit} from '../'
 Object.assign(globalThis, {
   subject$: main(port, cuit, self)
 });
-new EventEmitter;
