@@ -30,12 +30,12 @@ export const port = {
 
 export const window = action =>
   compose(
-    plug(keyCode(KEY_CODE_ENTER),
-      source(action.newTodo.keypress), sink(action.newTodo.enter)),
-    plug(keyCode(KEY_CODE_ENTER),
-      source(action.item.edit.keypress), sink(action.item.edit.enter)),
-    plug(keyCode(KEY_CODE_ESC),
-      source(action.item.edit.keypress), sink(action.item.edit.esc)));
+    keyCode(source(action.newTodo.keypress), sink(action.newTodo.enter),
+      KEY_CODE_ENTER),
+    keyCode(source(action.item.edit.keypress), sink(action.item.edit.enter),
+      KEY_CODE_ENTER),
+    keyCode(source(action.item.edit.keypress), sink(action.item.edit.esc),
+      KEY_CODE_ESC));
 
 export const ui = (action, state) =>
   compose(
@@ -43,8 +43,7 @@ export const ui = (action, state) =>
       source(action.newTodo.enter), sink(state.newTodo.update)),
     plug(mapToSink(),
       source(action.newTodo.enter), sink(state.item.collection.add)),
-    plug(add,
-      source(action.newTodo.enter), sink(state.item.title.update),
+    add(source(action.newTodo.enter), sink(state.item.title.update),
       source(state.item.collection.data)),
     plug(mapToSink(''),
       source(action.newTodo.enter), sink(state.newTodo.update)),
