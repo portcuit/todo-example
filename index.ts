@@ -22,13 +22,13 @@ const bridge = {
 export const port = {
   ...context,
   snabbdom: snabbdom.port,
-  worker: worker.port,
+  worker: worker.port.parent,
   bridge
 };
 
 export const window = (port, Worker) => {
   const emitter = new EventEmitter;
-  const actionModule = snabbdom.action(emitter, 'action');
+  const actionModule:any = snabbdom.action(emitter, 'action');
 
   injectGlobal`
 @import url("https://unpkg.com/todomvc-app-css@2.3.0/index.css");
