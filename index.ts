@@ -3,9 +3,9 @@ import {injectGlobal} from 'emotion'
 import {compose,plug,source,sink} from '@pkit/core'
 import {directSink,fromEventSink,switchMapZipSink} from '@pkit/helper'
 import * as worker from '@pkit/worker'
+import * as snabbdom from '@pkit/snabbdom'
 import * as ui from './ui'
 import * as action from './action'
-import * as snabbdom from '@pkit/snabbdom'
 import {context} from '@pkit/core/port'
 
 const bridge = {
