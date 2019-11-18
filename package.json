@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "electron": "electron --inspect --remote-debugging-port=9222 ./src/app/main/electron"
   },
   "repository": {
@@ -22,5 +23,8 @@
     "@pkit/uikit": "github:portcuit/uikit#v0.0.1",
     "@pkit/worker": "github:portcuit/worker#v0.0.2",
     "emotion": "^10.0.23"
+  },
+  "devDependencies": {
+    "typescript": "^3.7.2"
   }
 }
