@@ -10,7 +10,6 @@ import {left} from './processors'
 import * as initial from './initial'
 import * as template from './template'
 
-
 export const port = {
   state: {
     ...containerStatePort,
